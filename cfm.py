@@ -5,6 +5,7 @@
 
 """notes {{{
     todo:
+        my filters are getting scuffed after : or @ and removing files? or *something*
         on preview loading screen, show filename then loading for preview
         loading screen for main window
         indicator for scrollup/scrolldownable
@@ -13,12 +14,12 @@
         add r and R (refresh cd and Refresh All), which just remove from dicts and display()
         If after shell, relposition > max whatever, make it max whatever
         better fish greeting (cfnew)
+        better shell handling for Windows and non-fish users
         self.sortby similar to filter
         indications of filter and self.sortby in new panels
         softlinks are being annoying af. this guy gets it:
             https://bugs.python.org/issue29635
         need to make better pager for items
-            smolneed: back_items don't make rel 0 every time it's back; make it what you saw? idk. probably will be same logic for paging in general
 
     For troubleshooting, look for #troubleshooting
 
@@ -485,7 +486,8 @@ class Menu(object):
         # self.display() # this is auto-called for some reason. Uncomment this if you see failures. #troubleshooting
 
     def get_main_items(self, start, end): # {{{
-        self.items = [[key,key] for key in self.dict_currentlist if self.filter in key and self.vfilter not in key]
+        self.items = [[key,key] for key in self.dict_currentlist if self.filter.lower() in key.lower() and self.vfilter.lower() not in key.lower()]
+        output_handler(self.filter.lower())
         self.filter = ""
         self.vfilter = "6f8312f4-0f0d-44f8-a81e-11631ebb7d11 be943147-d7a4-4f07-908c-b60e8644f3f2 31d1e686-5b2a-41ed-ab80-2ad75238a4a3"
 
@@ -867,6 +869,10 @@ class Menu(object):
             elif key == ord('t'):
                 self.panel.hide()
                 # self.get_preview()
+
+            # elif key == ord('t'):
+            #     self.panel.hide()
+            #     # self.get_preview()
 
         else:
             output_handler('aaaah!!!!!')
